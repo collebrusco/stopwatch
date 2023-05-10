@@ -28,7 +28,7 @@ double global_stopwatch_stopstart(ftime::TimeUnit); // stop, read, and restart s
 
 // construct these as little simple timers
 // init with time unit, default is nanoseconds
-class StopWatch {
+class Stopwatch {
 private:
     TimeUnit unit;
     double epoch_to_construct_nanos;
@@ -37,8 +37,8 @@ private:
     bool _running;
     bool _reset;
 public:
-    StopWatch();
-    StopWatch(TimeUnit);
+    Stopwatch();
+    Stopwatch(TimeUnit);
     void setUnit(TimeUnit);
     void start();
     void reset();
