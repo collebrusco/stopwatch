@@ -1,12 +1,12 @@
 //
-//  f_stopwatch.cpp
+//  Stopwatch.cpp
 //  graphics-library-interface
 //
 //  Created by Frank Collebrusco on 3/13/23.
 //
 //
 
-#include "f_stopwatch.h"
+#include "Stopwatch.h"
 
 #include <chrono>
 #include <ctime>

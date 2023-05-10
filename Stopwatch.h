@@ -1,13 +1,13 @@
 //
-//  f_stopwatch.h
+//  Stopwatch.h
 //  graphics-library-interface
 //
 //  Created by Frank Collebrusco on 3/13/23.
 //
 //
 
-#ifndef f_stopwatch_h
-#define f_stopwatch_h
+#ifndef Stopwatch_h
+#define Stopwatch_h
 
 #include <chrono>
 #include <ctime>
@@ -57,4 +57,4 @@ public:
 }
 
 
-#endif /* f_stopwatch_h */
+#endif /* Stopwatch_h */
