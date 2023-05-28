@@ -97,9 +97,9 @@ double ftime::Stopwatch::read(){
 
 double ftime::Stopwatch::read(TimeUnit u){
     if (_running){
-        return (nanos() - global_stopwatch_start_time) / (double)u;
+        return (nanos() - stopwatch_start_time) / (double)u;
     }
-    return (global_stopwatch_stop_time - global_stopwatch_start_time) / (double)u;
+    return (stopwatch_stop_time - stopwatch_start_time) / (double)u;
 }
 
 double ftime::Stopwatch::stop(){
