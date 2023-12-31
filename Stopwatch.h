@@ -42,9 +42,9 @@ public:
     void setUnit(TimeUnit);
     void start();
     void reset();
-    bool running();
-    double read();
-    double read(TimeUnit);
+    bool running() const;
+    double read() const;
+    double read(TimeUnit) const;
     double stop();
     double stop(TimeUnit);
     void reset_start();

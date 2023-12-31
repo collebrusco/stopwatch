@@ -87,15 +87,15 @@ void ftime::Stopwatch::reset(){
     _reset = true;
 }
 
-bool ftime::Stopwatch::running(){
+bool ftime::Stopwatch::running() const {
     return _running;
 }
 
-double ftime::Stopwatch::read(){
+double ftime::Stopwatch::read() const {
     return this->read(unit);
 }
 
-double ftime::Stopwatch::read(TimeUnit u){
+double ftime::Stopwatch::read(TimeUnit u) const {
     if (_running){
         return (nanos() - stopwatch_start_time) / (double)u;
     }
