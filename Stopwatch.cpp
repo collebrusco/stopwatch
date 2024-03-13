@@ -25,35 +25,35 @@ static double nanos(){
 static double global_stopwatch_start_time = 0;
 static double global_stopwatch_stop_time = 0;
 static bool global_stopwatch_running = false;
-double ftime::since_launch(ftime::TimeUnit u){
+double since_launch(TimeUnit u){
     return nanos() / (double)u;
 }
-void ftime::global_stopwatch_start(){
+void global_stopwatch_start(){
     global_stopwatch_running = true;
     global_stopwatch_start_time = nanos();
 }
 
-double ftime::global_stopwatch_stop(ftime::TimeUnit u){
+double global_stopwatch_stop(TimeUnit u){
     global_stopwatch_running = false;
     global_stopwatch_stop_time = nanos();
     return (global_stopwatch_stop_time - global_stopwatch_start_time) / (double)u;
 }
-double ftime::global_stopwatch_read(ftime::TimeUnit u){
+double global_stopwatch_read(TimeUnit u){
     if (global_stopwatch_running){
         return (nanos() - global_stopwatch_start_time) / (double)u;
     }
     return (global_stopwatch_stop_time - global_stopwatch_start_time) / (double)u;
 }
 
-double ftime::global_stopwatch_stopstart(ftime::TimeUnit u){
-    double dt = ftime::global_stopwatch_stop(NANOSECONDS);
-    ftime::global_stopwatch_start();
+double global_stopwatch_stopstart(TimeUnit u){
+    double dt = global_stopwatch_stop(NANOSECONDS);
+    global_stopwatch_start();
     return dt / (double)u;
 }
 
 // ********************************STOPWATCH OBJ DEFNS********************************
 
-ftime::Stopwatch::Stopwatch(){
+Stopwatch::Stopwatch(){
     _reset = true;
     auto _now = std::chrono::system_clock::now();
     auto _duration = _now.time_since_epoch();
@@ -62,7 +62,7 @@ ftime::Stopwatch::Stopwatch(){
     epoch_to_construct_nanos = ns.count();
 }
 
-ftime::Stopwatch::Stopwatch(TimeUnit u){
+Stopwatch::Stopwatch(TimeUnit u){
     _reset = true;
     unit = u;
     auto _now = std::chrono::system_clock::now();
@@ -71,11 +71,11 @@ ftime::Stopwatch::Stopwatch(TimeUnit u){
     epoch_to_construct_nanos = ns.count();
 }
 
-void ftime::Stopwatch::setUnit(TimeUnit u){
+void Stopwatch::setUnit(TimeUnit u){
     unit = u;
 }
 
-void ftime::Stopwatch::start(){
+void Stopwatch::start(){
     if (_reset){
         _reset = false;
         stopwatch_start_time = nanos();
@@ -83,30 +83,30 @@ void ftime::Stopwatch::start(){
     _running = true;
 }
 
-void ftime::Stopwatch::reset(){
+void Stopwatch::reset(){
     _reset = true;
 }
 
-bool ftime::Stopwatch::running() const {
+bool Stopwatch::running() const {
     return _running;
 }
 
-double ftime::Stopwatch::read() const {
+double Stopwatch::read() const {
     return this->read(unit);
 }
 
-double ftime::Stopwatch::read(TimeUnit u) const {
+double Stopwatch::read(TimeUnit u) const {
     if (_running){
         return (nanos() - stopwatch_start_time) / (double)u;
     }
     return (stopwatch_stop_time - stopwatch_start_time) / (double)u;
 }
 
-double ftime::Stopwatch::stop(){
+double Stopwatch::stop(){
     return this->stop(unit);
 }
 
-double ftime::Stopwatch::stop(TimeUnit u){
+double Stopwatch::stop(TimeUnit u){
     if (_running){
         _running = false;
         stopwatch_stop_time = nanos();
@@ -114,26 +114,26 @@ double ftime::Stopwatch::stop(TimeUnit u){
     return (stopwatch_stop_time - stopwatch_start_time) / (double)u;
 }
 
-void ftime::Stopwatch::reset_start(){
+void Stopwatch::reset_start(){
     this->reset();
     this->start();
 }
 
-double ftime::Stopwatch::stop_reset(){
+double Stopwatch::stop_reset(){
     return this->stop_reset(unit);
 }
 
-double ftime::Stopwatch::stop_reset(TimeUnit u){
+double Stopwatch::stop_reset(TimeUnit u){
     double r = this->stop(u);
     this->reset();
     return r;
 }
 
-double ftime::Stopwatch::stop_reset_start(){
+double Stopwatch::stop_reset_start(){
     return this->stop_reset_start(unit);
 }
 
-double ftime::Stopwatch::stop_reset_start(TimeUnit u){
+double Stopwatch::stop_reset_start(TimeUnit u){
     double r = this->stop_reset(u);
     this->start();
     return r;
