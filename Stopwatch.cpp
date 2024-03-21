@@ -25,27 +25,27 @@ static double nanos(){
 static double global_stopwatch_start_time = 0;
 static double global_stopwatch_stop_time = 0;
 static bool global_stopwatch_running = false;
-double since_launch(TimeUnit u){
+static double since_launch(TimeUnit u){
     return nanos() / (double)u;
 }
-void global_stopwatch_start(){
+static void global_stopwatch_start(){
     global_stopwatch_running = true;
     global_stopwatch_start_time = nanos();
 }
 
-double global_stopwatch_stop(TimeUnit u){
+static double global_stopwatch_stop(TimeUnit u){
     global_stopwatch_running = false;
     global_stopwatch_stop_time = nanos();
     return (global_stopwatch_stop_time - global_stopwatch_start_time) / (double)u;
 }
-double global_stopwatch_read(TimeUnit u){
+static double global_stopwatch_read(TimeUnit u){
     if (global_stopwatch_running){
         return (nanos() - global_stopwatch_start_time) / (double)u;
     }
     return (global_stopwatch_stop_time - global_stopwatch_start_time) / (double)u;
 }
 
-double global_stopwatch_stopstart(TimeUnit u){
+static double global_stopwatch_stopstart(TimeUnit u){
     double dt = global_stopwatch_stop(NANOSECONDS);
     global_stopwatch_start();
     return dt / (double)u;
