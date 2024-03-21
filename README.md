@@ -1,5 +1,5 @@
 # stopwatch
-It's really just a stopwatch: call one of `reset(); start(); read(); stop();`      
+It's really just a stopwatch: call one of `start(); stop(); read(); reset();`      
        
 `stop()` and `read()` both return the time and can be passed units.        
        
