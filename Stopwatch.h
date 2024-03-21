@@ -9,7 +9,7 @@ enum TimeUnit {
 };
 
 // construct these as little simple timers
-// init with time unit, default is nanoseconds
+// init with time unit, default is seconds
 class Stopwatch {
 private:
     TimeUnit unit;
