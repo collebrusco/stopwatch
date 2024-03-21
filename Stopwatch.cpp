@@ -1,90 +1,26 @@
-//
-//  Stopwatch.cpp
-//  graphics-library-interface
-//
-//  Created by Frank Collebrusco on 3/13/23.
-//
-//
-
 #include "Stopwatch.h"
-
 #include <chrono>
 #include <ctime>
 
-static std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-static auto duration = now.time_since_epoch();
-static auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(duration);
-static double epoch_to_launch_nanos = nanoseconds.count();
+Stopwatch::Stopwatch(TimeUnit tu) : unit(tu), stopwatch_start_time(0), stopwatch_stop_time(0), _running(false), _reset(true) {}
 
-static double nanos(){
-    now = std::chrono::system_clock::now();
-    duration = now.time_since_epoch();
-    nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(duration);
-    return (double)nanoseconds.count() - epoch_to_launch_nanos;
-}
-static double global_stopwatch_start_time = 0;
-static double global_stopwatch_stop_time = 0;
-static bool global_stopwatch_running = false;
-static double since_launch(TimeUnit u){
-    return nanos() / (double)u;
-}
-static void global_stopwatch_start(){
-    global_stopwatch_running = true;
-    global_stopwatch_start_time = nanos();
+void Stopwatch::setUnit(TimeUnit tu) {
+    unit = tu;
 }
 
-static double global_stopwatch_stop(TimeUnit u){
-    global_stopwatch_running = false;
-    global_stopwatch_stop_time = nanos();
-    return (global_stopwatch_stop_time - global_stopwatch_start_time) / (double)u;
-}
-static double global_stopwatch_read(TimeUnit u){
-    if (global_stopwatch_running){
-        return (nanos() - global_stopwatch_start_time) / (double)u;
-    }
-    return (global_stopwatch_stop_time - global_stopwatch_start_time) / (double)u;
-}
-
-static double global_stopwatch_stopstart(TimeUnit u){
-    double dt = global_stopwatch_stop(NANOSECONDS);
-    global_stopwatch_start();
-    return dt / (double)u;
-}
-
-// ********************************STOPWATCH OBJ DEFNS********************************
-
-Stopwatch::Stopwatch(){
-    _reset = true;
-    auto _now = std::chrono::system_clock::now();
-    auto _duration = _now.time_since_epoch();
-    auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(_duration);
-    unit = NANOSECONDS;
-    epoch_to_construct_nanos = ns.count();
-}
-
-Stopwatch::Stopwatch(TimeUnit u){
-    _reset = true;
-    unit = u;
-    auto _now = std::chrono::system_clock::now();
-    auto _duration = _now.time_since_epoch();
-    auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(_duration);
-    epoch_to_construct_nanos = ns.count();
-}
-
-void Stopwatch::setUnit(TimeUnit u){
-    unit = u;
-}
-
-void Stopwatch::start(){
-    if (_reset){
+void Stopwatch::start() {
+    if (!_running) {
+        _running = true;
         _reset = false;
-        stopwatch_start_time = nanos();
+        stopwatch_start_time = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
     }
-    _running = true;
 }
 
-void Stopwatch::reset(){
+void Stopwatch::reset() {
     _reset = true;
+    _running = false;
+    stopwatch_start_time = 0;
+    stopwatch_stop_time = 0;
 }
 
 bool Stopwatch::running() const {
@@ -92,49 +28,52 @@ bool Stopwatch::running() const {
 }
 
 double Stopwatch::read() const {
-    return this->read(unit);
+    return read(unit);
 }
 
-double Stopwatch::read(TimeUnit u) const {
-    if (_running){
-        return (nanos() - stopwatch_start_time) / (double)u;
+double Stopwatch::read(TimeUnit tu) const {
+    if (_running) {
+        auto current_time = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+        return (current_time - stopwatch_start_time) / tu;
     }
-    return (stopwatch_stop_time - stopwatch_start_time) / (double)u;
+    if (!_reset)
+        return (stopwatch_stop_time - stopwatch_start_time) / tu;
+    return 0;
 }
 
-double Stopwatch::stop(){
-    return this->stop(unit);
+double Stopwatch::stop() {
+    return stop(unit);
 }
 
-double Stopwatch::stop(TimeUnit u){
-    if (_running){
+double Stopwatch::stop(TimeUnit tu) {
+    if (_running) {
         _running = false;
-        stopwatch_stop_time = nanos();
+        stopwatch_stop_time = static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
     }
-    return (stopwatch_stop_time - stopwatch_start_time) / (double)u;
+    return read(tu);
 }
 
-void Stopwatch::reset_start(){
-    this->reset();
-    this->start();
+void Stopwatch::reset_start() {
+    reset();
+    start();
 }
 
-double Stopwatch::stop_reset(){
-    return this->stop_reset(unit);
+double Stopwatch::stop_reset() {
+    return stop_reset(unit);
 }
 
-double Stopwatch::stop_reset(TimeUnit u){
-    double r = this->stop(u);
-    this->reset();
-    return r;
+double Stopwatch::stop_reset(TimeUnit tu) {
+    double elapsed = stop(tu);
+    reset();
+    return elapsed;
 }
 
-double Stopwatch::stop_reset_start(){
-    return this->stop_reset_start(unit);
+double Stopwatch::stop_reset_start() {
+    return stop_reset_start(unit);
 }
 
-double Stopwatch::stop_reset_start(TimeUnit u){
-    double r = this->stop_reset(u);
-    this->start();
-    return r;
+double Stopwatch::stop_reset_start(TimeUnit tu) {
+    double elapsed = stop(tu);
+    reset_start();
+    return elapsed;
 }
