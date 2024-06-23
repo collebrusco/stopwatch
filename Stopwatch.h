@@ -16,8 +16,8 @@ private:
     double epoch_to_construct_nanos;
     double stopwatch_start_time;
     double stopwatch_stop_time;
-    bool _running;
-    bool _reset;
+    bool _running       : 1;
+    bool _reset         : 1;
 public:
     Stopwatch(TimeUnit tu = SECONDS);
     void setUnit(TimeUnit);
